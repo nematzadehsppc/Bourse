@@ -6,15 +6,15 @@ namespace BourseApi.Contract
 {
     public interface IParamTypeRepository
     {
-        void Add(ParamType item);
+        void Add(Item item);
 
-        IEnumerable<ParamType> GetAll();
+        IEnumerable<Item> GetAll();
 
-        ParamType Find(int key);
+        Item Find(int key);
 
-        ParamType Remove(int key);
+        Item Remove(int key);
 
-        void Update(ParamType item);
+        void Update(Item item);
 
         int GetIdByName(string name);
     }
