@@ -16,8 +16,12 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
+  //دکمه ورود
+  onSubmit() {
+    this.login();
+  }
+
   public login() {
-    this.model.userValidation = 'Angular';
     alert(this.model.username);
   }
 

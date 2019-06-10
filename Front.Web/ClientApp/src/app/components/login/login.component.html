@@ -1,21 +1,32 @@
 <div class="col-md-6 col-md-offset-3" dir="rtl">
   <h2>ورود به حساب کاربری</h2>
-  <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
-    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <div class="form-group">
       <label for="username">نام کاربری</label>
       <input type="text" class="form-control" name="username" [(ngModel)]="model.username" #username="ngModel" required />
-      <div *ngIf="f.submitted && !username.valid" class="help-block">Username is required</div>
-    </div>
-    <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
-      <label for="password">کلمه عبور</label>
-      <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required />
-      <div *ngIf="f.submitted && !password.valid" class="help-block">Password is required</div>
+      <div [hidden]="username.valid || username.pristine"
+           class="alert alert-danger">
+        لطفا نام کاربری را وارد کنید.
+      </div>
     </div>
     <div class="form-group">
-      <button [disabled]="loading" class="btn btn-primary">ورود</button>
+      <label for="password">کلمه عبور</label>
+      <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required />
+      <div [hidden]="password.valid || password.pristine"
+           class="alert alert-danger">
+        لطفا کلمهٔ عبور را وارد کنید.
+      </div>
+    </div>
+    <div class="form-group">
+      <button [disabled]="!loginForm.form.valid" class="btn btn-primary">ورود</button>
       <a [routerLink]="['/register']" class="btn btn-link">ثبت نام</a>
     </div>
   </form>
+
+  <!--<div class="loading" [hidden]="!loading">
+    <img src="/assets/images/tadbir-loading.gif" />
+  </div>-->
+
 </div>
 
 <!--<div class="container" dir="rtl">
