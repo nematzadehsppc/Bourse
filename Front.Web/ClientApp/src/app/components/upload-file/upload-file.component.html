@@ -1,35 +1,26 @@
 <div>
 
-  <div class="form-group">
-    <div class="col-md-10">
-      <input type="file" #file placeholder="Choose file" onchange="this.form.submit()">
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-md-10">
-      <button type="submit" class="btn btn-info" (click)="uploadFile(file.files)">Upload File</button>
-    </div>
-  </div>
+  <input type="file" #file placeholder="Choose file" onchange="this.form.submit()">
 
-  <div class="col-md-4">
+  <dp-date-picker dir="rtl"
+                  [(ngModel)]="dateObject"
+                  mode="day"
+                  placeholder="انتخاب تاریخ"
+                  theme="dp-material">
+  </dp-date-picker>
+
+  <button type="submit" class="btn btn-info" (click)="uploadFile(file.files)">Upload File</button>
+
+
+  <!--<div class="col-md-4">
     <span class="upload" *ngIf="progress > 0">
       {{progress}}%
     </span>
     <span class="upload" *ngIf="message">
       {{message}}
     </span>
-  </div>
-  
+  </div>-->
 
-  <div class="col-md-4">
-    <dp-date-picker dir="rtl"
-                    [(ngModel)]="dateObject"
-                    mode="day"
-                    placeholder="تاریخ"
-                    theme="dp-material">
-    </dp-date-picker>
-  </div>
-
-  </div>
+</div>
 
 

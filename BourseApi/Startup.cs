@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using BourseApi.Contract;
 using BourseApi.Repositories;
 using Back.DAL.Context;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BourseApi
 {
@@ -26,7 +29,46 @@ namespace BourseApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            //برای فراخوانی متدهای محافظت شده از فناوری
+            //JWT (JSon Web Tokens)
+            //استفاده می‌کنیم
+            //خطوط بعدی برای پیکربندی مراجعه
+            //Authorize
+            //ها به این فناوری گذاشته شده است
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "bearer";
+            }).AddJwtBearer("bearer", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidAudience = "Everyone",
+                    ValidateIssuer = true,
+                    ValidIssuer = "SPPC",
+
+                    ValidateIssuerSigningKey = true,
+                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TadbirSecurityParameters.Secret)),
+
+                    ValidateLifetime = true, //validate the expiration and not before values in the token
+
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
+            });
 
             services.AddDbContext<Back.DAL.Context.UAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("UAppContext")));
@@ -47,6 +89,9 @@ namespace BourseApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //استفاده از JWT
+            app.UseAuthentication();
 
             app.UseMvc();
         }

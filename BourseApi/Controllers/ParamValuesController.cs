@@ -129,6 +129,10 @@ namespace BourseApi.Controllers
                         //    return Ok();
                     }
 
+                    else if (fileName.EndsWith(".html") || fileName.EndsWith(".htm"))
+                    {
+                    }
+
                     return BadRequest();
 
                 }
