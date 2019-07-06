@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BourseApi.Contract;
 using Back.DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BourseApi.Controllers
 {
@@ -76,6 +77,7 @@ namespace BourseApi.Controllers
             return new NoContentResult();
         }
 
+        [Authorize]
         [Route("delete/{id}")]
         [HttpDelete]
         public IActionResult Delete(int id)

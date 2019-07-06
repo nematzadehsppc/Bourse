@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using BourseApi.Contract;
 using BourseApi.Repositories;
-using Back.DAL.Context;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BourseService;
 
 namespace BourseApi
 {
@@ -49,7 +47,7 @@ namespace BourseApi
                     ValidIssuer = "SPPC",
 
                     ValidateIssuerSigningKey = true,
-                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TadbirSecurityParameters.Secret)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecurityParameters.Secret)),
 
                     ValidateLifetime = true, //validate the expiration and not before values in the token
 
