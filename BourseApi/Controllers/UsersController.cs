@@ -11,22 +11,24 @@ namespace BourseApi.Controllers
     [Produces("application/json")]
     public class UsersController : Controller
     {
-        private IUserRepository UserRepository { get; set; }
+        private IUserContract UserContract { get; set; }
         
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IUserContract userRepository)
         {
-            UserRepository = userRepository;
+            UserContract = userRepository;
         }
-        
+
+        [Authorize]
+        [Produces("application/json")]
         [Route("getAll")]
         [HttpGet]
-        public IEnumerable<User> GetAllUsers() => UserRepository.GetAll();
+        public IEnumerable<User> GetAllUsers() => UserContract.GetAll();
 
         [Route("getById/{id}")]
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            var User = UserRepository.Find(id);
+            var User = UserContract.Find(id);
             if (User == null)
             {
                 return new ObjectResult(new User());
@@ -47,8 +49,8 @@ namespace BourseApi.Controllers
             {
                 return BadRequest();
             }
-            
-            UserRepository.Add(value);
+
+            UserContract.Add(value);
             return CreatedAtRoute("GetUser", new { controller = "User", id = value.Id }, value);
         }
 
@@ -61,7 +63,7 @@ namespace BourseApi.Controllers
                 return BadRequest("value is null.");
             }
 
-            var User = UserRepository.Find(id);
+            var User = UserContract.Find(id);
             if (User == null)
             {
                 return NotFound("User record couldn't be found.");
@@ -73,7 +75,7 @@ namespace BourseApi.Controllers
             }
 
 
-            UserRepository.Update(value);
+            UserContract.Update(value);
             return new NoContentResult();
         }
 
@@ -84,14 +86,15 @@ namespace BourseApi.Controllers
         {
             //UserRepository.Remove(id);
 
-            var User = UserRepository.Find(id);
+            var User = UserContract.Find(id);
             if (User == null)
             {
                 return NotFound("User record couldn't be found.");
             }
 
-            UserRepository.Remove(id);
+            UserContract.Remove(id);
             return NoContent();
         }
+
     }
 }

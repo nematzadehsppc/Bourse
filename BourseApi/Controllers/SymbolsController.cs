@@ -10,22 +10,22 @@ namespace BourseApi.Controllers
     [Produces("application/json")]
     public class SymbolsController : Controller
     {
-        private ISymbolRepository SymbolRepository { get; set; }
+        private ISymbolContract SymbolContract { get; set; }
 
-        public SymbolsController(ISymbolRepository symbolRepository)
+        public SymbolsController(ISymbolContract symbolContract)
         {
-            SymbolRepository = symbolRepository;
+            SymbolContract = symbolContract;
         }
 
         [Route("getAll")]
         [HttpGet]
-        public IEnumerable<Symbol> GetAll() => SymbolRepository.GetAll();
+        public IEnumerable<Symbol> GetAll() => SymbolContract.GetAll();
 
         [Route("getById/{id}")]
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            var Symbol = SymbolRepository.Find(id);
+            var Symbol = SymbolContract.Find(id);
             if (Symbol == null)
             {
                 return new ObjectResult(new Symbol());
@@ -47,7 +47,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
 
-            SymbolRepository.Add(value);
+            SymbolContract.Add(value);
             return new ContentResult();
         }
 
@@ -60,7 +60,7 @@ namespace BourseApi.Controllers
                 return BadRequest("value is null.");
             }
 
-            var Symbol = SymbolRepository.Find(id);
+            var Symbol = SymbolContract.Find(id);
             if (Symbol == null)
             {
                 return NotFound("Symbol record couldn't be found.");
@@ -71,7 +71,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
             
-            SymbolRepository.Update(value);
+            SymbolContract.Update(value);
             return new NoContentResult();
         }
 
@@ -79,15 +79,15 @@ namespace BourseApi.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            //SymbolRepository.Remove(id);
+            //SymbolContract.Remove(id);
 
-            var Symbol = SymbolRepository.Find(id);
+            var Symbol = SymbolContract.Find(id);
             if (Symbol == null)
             {
                 return NotFound("Symbol record couldn't be found.");
             }
 
-            SymbolRepository.Remove(id);
+            SymbolContract.Remove(id);
             return NoContent();
         }
     }

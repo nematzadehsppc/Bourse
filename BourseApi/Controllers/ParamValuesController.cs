@@ -18,22 +18,22 @@ namespace BourseApi.Controllers
     [Produces("application/json")]
     public class ParamValuesController : Controller
     {
-        private IParamValueRepository ParamValueRepository { get; set; }
+        private IParamValueContract ParamValueContract { get; set; }
 
-        public ParamValuesController(IParamValueRepository paramValueRepository)
+        public ParamValuesController(IParamValueContract paramValueRepository)
         {
-            ParamValueRepository = paramValueRepository;
+            ParamValueContract = paramValueRepository;
         }
 
         [Route("getAll")]
         [HttpGet]
-        public IEnumerable<ParamValue> GetAll() => ParamValueRepository.GetAll();
+        public IEnumerable<ParamValue> GetAll() => ParamValueContract.GetAll();
 
         [Route("getById/{id}")]
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            var ParamValue = ParamValueRepository.Find(id);
+            var ParamValue = ParamValueContract.Find(id);
             if (ParamValue == null)
             {
                 return new ObjectResult(new ParamValue());
@@ -55,7 +55,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
 
-            ParamValueRepository.Add(value);
+            ParamValueContract.Add(value);
             return CreatedAtRoute("GetParamValue", new { controller = "ParamValue", id = value.Id }, value);
         }
 
@@ -68,7 +68,7 @@ namespace BourseApi.Controllers
                 return BadRequest("value is null.");
             }
 
-            var ParamValue = ParamValueRepository.Find(id);
+            var ParamValue = ParamValueContract.Find(id);
             if (ParamValue == null)
             {
                 return NotFound("ParamValue record couldn't be found.");
@@ -79,7 +79,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
 
-            ParamValueRepository.Update(value);
+            ParamValueContract.Update(value);
             return new NoContentResult();
         }
 
@@ -89,13 +89,13 @@ namespace BourseApi.Controllers
         {
             //ParamValueRepository.Remove(id);
 
-            var ParamValue = ParamValueRepository.Find(id);
+            var ParamValue = ParamValueContract.Find(id);
             if (ParamValue == null)
             {
                 return NotFound("ParamValue record couldn't be found.");
             }
 
-            ParamValueRepository.Remove(id);
+            ParamValueContract.Remove(id);
             return NoContent();
         }
 
@@ -116,7 +116,7 @@ namespace BourseApi.Controllers
                         var workbook = new XLWorkbook(file.OpenReadStream());
                         var worksheet = workbook.Worksheet(1);
 
-                        if (ParamValueRepository.readExcelFile(worksheet))
+                        if (ParamValueContract.readExcelFile(worksheet))
                             return Ok();
 
                         //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);

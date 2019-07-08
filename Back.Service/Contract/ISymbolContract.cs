@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BourseApi.Contract
 {
-    public interface ISymbolRepository
+    public interface ISymbolContract
     {
         void Add(Symbol item);
 

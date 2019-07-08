@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BourseApi.Contract
 {
-    public interface IUserRepository
+    public interface IUserContract
     {
         void Add(User item);
 

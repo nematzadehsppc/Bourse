@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BourseService;
+using BourseApi.Controllers;
 
 namespace BourseApi
 {
@@ -27,6 +28,19 @@ namespace BourseApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<Back.DAL.Context.UAppContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("UAppContext")));
+
+            services.AddTransient<DbContext, Back.DAL.Context.UAppContext>();
+            services.AddScoped<IUserContract, UserRepository>();
+            services.AddScoped<ISymbolContract, SymbolRepository>();
+            services.AddScoped<IItemContract, ItemRepository>();
+            services.AddScoped<IParamValueContract, ParamValueRepository>();
+            services.AddScoped<IAuthenticationContract, AuthenticationRepository>();
+            services.AddScoped<ITokenServiceContract, TokenServiceRepository>();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             //برای فراخوانی متدهای محافظت شده از فناوری
             //JWT (JSon Web Tokens)
             //استفاده می‌کنیم
@@ -44,7 +58,7 @@ namespace BourseApi
                     ValidateAudience = false,
                     ValidAudience = "Everyone",
                     ValidateIssuer = true,
-                    ValidIssuer = "SPPC",
+                    ValidIssuer = "OMIDAN",
 
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecurityParameters.Secret)),
@@ -67,17 +81,6 @@ namespace BourseApi
                 };
 
             });
-
-            services.AddDbContext<Back.DAL.Context.UAppContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("UAppContext")));
-
-            services.AddTransient<DbContext, Back.DAL.Context.UAppContext>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ISymbolRepository, SymbolRepository>();
-            services.AddScoped<IItemRepository, ItemRepository>();
-            services.AddScoped<IParamValueRepository, ParamValueRepository>();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,11 +90,11 @@ namespace BourseApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseMvc();
 
             //استفاده از JWT
             app.UseAuthentication();
-
-            app.UseMvc();
         }
     }
 }

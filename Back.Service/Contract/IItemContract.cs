@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BourseApi.Contract
 {
-    public interface IParamTypeRepository
+    public interface IItemContract
     {
         void Add(Item item);
 

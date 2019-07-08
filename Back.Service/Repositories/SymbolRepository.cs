@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace BourseApi.Repositories
 {
-    public class SymbolRepository : ISymbolRepository
+    public class SymbolRepository : ISymbolContract
     {
         private UAppContext _dbContext;
 

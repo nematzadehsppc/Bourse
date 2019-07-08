@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BourseApi.Contract
 {
-    public interface IParamValueRepository
+    public interface IParamValueContract
     {
         void Add(ParamValue item);
 

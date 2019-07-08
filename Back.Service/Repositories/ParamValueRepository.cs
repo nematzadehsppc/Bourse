@@ -14,7 +14,7 @@ using ClosedXML.Excel;
 
 namespace BourseApi.Repositories
 {
-    public class ParamValueRepository : IParamValueRepository
+    public class ParamValueRepository : IParamValueContract
     {
         private UAppContext _dbContext;
 

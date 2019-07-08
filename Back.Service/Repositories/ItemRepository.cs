@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BourseApi.Repositories
 {
-    public class ItemRepository : IItemRepository
+    public class ItemRepository : IItemContract
     {
         private UAppContext _dbContext;
 

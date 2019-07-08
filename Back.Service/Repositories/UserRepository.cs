@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace BourseApi.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserContract
     {
         private UAppContext _dbContext;
 

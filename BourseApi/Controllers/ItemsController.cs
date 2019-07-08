@@ -10,22 +10,22 @@ namespace BourseApi.Controllers
     [Produces("application/json")]
     public class ItemsController : Controller
     {
-        private IItemRepository ItemRepository { get; set; }
+        private IItemContract ItemContract { get; set; }
 
-        public ItemsController(IItemRepository itemRepository)
+        public ItemsController(IItemContract itemContract)
         {
-            ItemRepository = itemRepository;
+            ItemContract = itemContract;
         }
 
         [Route("getAll")]
         [HttpGet]
-        public IEnumerable<Item> GetAll() => ItemRepository.GetAll();
+        public IEnumerable<Item> GetAll() => ItemContract.GetAll();
 
         [Route("getById/{id}")]
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            var Item = ItemRepository.Find(id);
+            var Item = ItemContract.Find(id);
             if (Item == null)
             {
                 return new ObjectResult(new Item());
@@ -48,7 +48,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
 
-            ItemRepository.Add(value);
+            ItemContract.Add(value);
             return CreatedAtRoute("GetItem", new { controller = "Item", id = value.Id }, value);
         }
 
@@ -61,7 +61,7 @@ namespace BourseApi.Controllers
                 return BadRequest("value is null.");
             }
 
-            var Item = ItemRepository.Find(id);
+            var Item = ItemContract.Find(id);
             if (Item == null)
             {
                 return NotFound("Item record couldn't be found.");
@@ -72,7 +72,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
             
-            ItemRepository.Update(value);
+            ItemContract.Update(value);
             return new NoContentResult();
         }
 
@@ -80,15 +80,15 @@ namespace BourseApi.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            //ItemRepository.Remove(id);
+            //ItemContract.Remove(id);
 
-            var Item = ItemRepository.Find(id);
+            var Item = ItemContract.Find(id);
             if (Item == null)
             {
                 return NotFound("The Item record couldn't be found.");
             }
 
-            ItemRepository.Remove(id);
+            ItemContract.Remove(id);
             return NoContent();
         }
     }

@@ -16,11 +16,20 @@ namespace Back.DAL.Models
         [Required]
         [Column(TypeName = "NVARCHAR(255)")]
         [StringLength(255)]
+        public string UserName { get; set; }
+
+        [Required]
+        [Column(TypeName = "NVARCHAR(255)")]
+        [StringLength(255)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required]
         public int AccessLevel { get; set; }
+        
+        [Column(TypeName = "VARCHAR(64)")]
+        [StringLength(64)]
+        public string CheckSum { get; set; }
 
         [Required]
         [Column(TypeName = "NVARCHAR(255)")]
