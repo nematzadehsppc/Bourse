@@ -90,6 +90,10 @@ namespace Back.DAL.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("DateTime");
 
+                    b.Property<string>("CheckSum")
+                        .HasColumnType("VARCHAR(64)")
+                        .HasMaxLength(64);
+
                     b.Property<string>("Email")
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(255);
@@ -108,6 +112,11 @@ namespace Back.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(12);
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(255)")
+                        .HasMaxLength(255);
 
                     b.HasKey("Id");
 

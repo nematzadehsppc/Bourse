@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Back.DAL.Migrations
 {
-    public partial class initDB : Migration
+    public partial class initialize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "__ParamType__",
+                name: "__Item__",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -18,7 +18,7 @@ namespace Back.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK___ParamType__", x => x.Id);
+                    table.PrimaryKey("PK___Item__", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -41,8 +41,10 @@ namespace Back.DAL.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
+                    UserName = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
                     Password = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
                     AccessLevel = table.Column<int>(nullable: false),
+                    CheckSum = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true),
                     PhoneNumber = table.Column<string>(type: "NVARCHAR(255)", maxLength: 12, nullable: false),
                     Email = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: true),
                     BirthDate = table.Column<DateTime>(type: "DateTime", nullable: true)
@@ -58,18 +60,18 @@ namespace Back.DAL.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DateDay = table.Column<DateTime>(type: "DateTime", nullable: false),
+                    TradingDate = table.Column<DateTime>(type: "DateTime", nullable: false),
                     Value = table.Column<decimal>(type: "DECIMAL(18, 2)", nullable: false),
                     SymbolId = table.Column<int>(nullable: false),
-                    ParamTypeId = table.Column<int>(nullable: false)
+                    ItemId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK___ParamValue__", x => x.Id);
                     table.ForeignKey(
-                        name: "FK___ParamValue_____ParamType___ParamTypeId",
-                        column: x => x.ParamTypeId,
-                        principalTable: "__ParamType__",
+                        name: "FK___ParamValue_____Item___ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "__Item__",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -81,9 +83,9 @@ namespace Back.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX___ParamValue___ParamTypeId",
+                name: "IX___ParamValue___ItemId",
                 table: "__ParamValue__",
-                column: "ParamTypeId");
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX___ParamValue___SymbolId",
@@ -100,7 +102,7 @@ namespace Back.DAL.Migrations
                 name: "__User__");
 
             migrationBuilder.DropTable(
-                name: "__ParamType__");
+                name: "__Item__");
 
             migrationBuilder.DropTable(
                 name: "__Symbol__");

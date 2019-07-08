@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Back.DAL.Migrations
 {
     [DbContext(typeof(UAppContext))]
-    [Migration("20190531152714_initDB")]
-    partial class initDB
+    [Migration("20190708184506_initialize")]
+    partial class initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Back.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Back.DAL.Models.ParamType", b =>
+            modelBuilder.Entity("Back.DAL.Models.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,7 +34,7 @@ namespace Back.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("__ParamType__");
+                    b.ToTable("__Item__");
                 });
 
             modelBuilder.Entity("Back.DAL.Models.ParamValue", b =>
@@ -43,14 +43,14 @@ namespace Back.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateDay")
-                        .HasColumnType("DateTime");
-
-                    b.Property<int>("ParamTypeId")
-                        .HasColumnName("ParamTypeId");
+                    b.Property<int>("ItemId")
+                        .HasColumnName("ItemId");
 
                     b.Property<int>("SymbolId")
                         .HasColumnName("SymbolId");
+
+                    b.Property<DateTime>("TradingDate")
+                        .HasColumnType("DateTime");
 
                     b.Property<decimal>("Value")
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 38, scale: 17)))
@@ -58,7 +58,7 @@ namespace Back.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParamTypeId");
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("SymbolId");
 
@@ -92,6 +92,10 @@ namespace Back.DAL.Migrations
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("DateTime");
 
+                    b.Property<string>("CheckSum")
+                        .HasColumnType("VARCHAR(64)")
+                        .HasMaxLength(64);
+
                     b.Property<string>("Email")
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(255);
@@ -111,6 +115,11 @@ namespace Back.DAL.Migrations
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(12);
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR(255)")
+                        .HasMaxLength(255);
+
                     b.HasKey("Id");
 
                     b.ToTable("__User__");
@@ -118,9 +127,9 @@ namespace Back.DAL.Migrations
 
             modelBuilder.Entity("Back.DAL.Models.ParamValue", b =>
                 {
-                    b.HasOne("Back.DAL.Models.ParamType", "ParamType")
+                    b.HasOne("Back.DAL.Models.Item", "Item")
                         .WithMany()
-                        .HasForeignKey("ParamTypeId")
+                        .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Back.DAL.Models.Symbol", "Symbol")
