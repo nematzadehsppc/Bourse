@@ -4,6 +4,7 @@ import { UploadFileComponent } from './components/upload-file/upload-file.compon
 import { LoginComponent } from './components/login/login.component';
 import { AdminLayoutComponent } from './components/layout/AdminLayout.component';
 import { LayoutComponent } from './components/layout/layout.component';
+import { RegisterComponent } from './components/register/register.component';
 
 
 // مسیر یابی سرویس ها
@@ -15,6 +16,12 @@ const routes: Routes = [
     // ip:port/admin/uploadfile
     path: 'admin', component: AdminLayoutComponent, children: [
       { path: 'uploadfile', component: UploadFileComponent }
+    ]
+  },
+  {
+    // ip:port/admin/uploadfile
+    path: 'admin', component: LayoutComponent, children: [
+      { path: 'register', component: RegisterComponent }
     ]
   },
   {

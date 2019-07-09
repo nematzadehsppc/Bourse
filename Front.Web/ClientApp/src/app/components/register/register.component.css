@@ -1,0 +1,49 @@
+#dis {
+  color: orangered;
+}
+
+.txtheight {
+  height: 31px;
+}
+
+.example-h2 {
+  margin: 10px;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.example-margin {
+  margin: 0 10px;
+}
+
+p.normal {
+  font-style: normal;
+}
+
+p.italic {
+  font-style: italic;
+}
+
+p.oblique {
+  font-style: oblique;
+}
+
+body {
+  margin: 100px;
+  text-align: center;
+  align: center;
+}
+
+input[type=text], [type=password], [type=number] {
+  width: 40%;
+  margin: 8px 0;
+  padding: 4px 4px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}

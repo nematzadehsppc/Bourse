@@ -93,8 +93,8 @@ namespace BourseApi.Controllers
             try
             {
                 string clientIPAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+
                 //در گام اول با بررسی اطلاعات کاربر در دیتابیس
-                //__Sys__
                 //از درستی اطلاعات وارد شده شامل نام کاربری و کلمه عبور و همینطور دسترسی داشتن کاربر به بخش مورد نیاز
                 //مطمئن می‌شویم
                 Tuple<AuthenticationResult, User> authResult = AuthenticationContract.AuthenticateUser(loginModel, clientIPAddress);

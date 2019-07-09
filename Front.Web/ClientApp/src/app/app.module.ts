@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UploadFileComponent } from './components/upload-file/upload-file.component';
 import { LoginComponent } from './components/login/login.component'
+import { RegisterComponent } from './components/register/register.component'
 import { HttpClientModule } from '@angular/common/http';
 import { DpDatePickerModule } from 'ng2-jalali-date-picker';
 import { AdminFooterComponent } from './components/adminLTE/admin.footer.component';
@@ -24,6 +25,7 @@ import { LayoutComponent } from './components/layout/layout.component';
     AppComponent,
     UploadFileComponent,
     LoginComponent,
+    RegisterComponent,
     AdminFooterComponent,
     AdminHeaderComponent,
     AdminMenuComponent,

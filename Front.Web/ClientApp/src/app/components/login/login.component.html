@@ -19,7 +19,10 @@
     </div>
     <div class="form-group">
       <button [disabled]="!loginForm.form.valid" class="btn btn-primary">ورود</button>
-      <a [routerLink]="['/register']" class="btn btn-link">ثبت نام</a>
+      <a routerLink="/admin/register">
+        ثبت نام
+      </a>
+      <!--<a [routerLink]="['/register']" class="btn btn-link">ثبت نام</a>-->
     </div>
   </form>
 

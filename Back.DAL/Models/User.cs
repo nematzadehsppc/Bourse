@@ -16,6 +16,11 @@ namespace Back.DAL.Models
         [Required]
         [Column(TypeName = "NVARCHAR(255)")]
         [StringLength(255)]
+        public string FamilyName { get; set; }
+
+        [Required]
+        [Column(TypeName = "NVARCHAR(255)")]
+        [StringLength(255)]
         public string UserName { get; set; }
 
         [Required]
