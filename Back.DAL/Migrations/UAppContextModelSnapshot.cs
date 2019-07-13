@@ -85,8 +85,6 @@ namespace Back.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccessLevel");
-
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("DateTime");
 
@@ -98,8 +96,11 @@ namespace Back.DAL.Migrations
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(255);
 
+                    b.Property<string>("FamilyName")
+                        .HasColumnType("NVARCHAR(255)")
+                        .HasMaxLength(255);
+
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(255);
 
@@ -109,7 +110,6 @@ namespace Back.DAL.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(12);
 

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Back.DAL.Migrations
 {
     [DbContext(typeof(UAppContext))]
-    [Migration("20190708184506_initialize")]
-    partial class initialize
+    [Migration("20190713195558_initd")]
+    partial class initd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -87,8 +87,6 @@ namespace Back.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccessLevel");
-
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("DateTime");
 
@@ -100,8 +98,11 @@ namespace Back.DAL.Migrations
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(255);
 
+                    b.Property<string>("FamilyName")
+                        .HasColumnType("NVARCHAR(255)")
+                        .HasMaxLength(255);
+
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(255);
 
@@ -111,7 +112,6 @@ namespace Back.DAL.Migrations
                         .HasMaxLength(255);
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("NVARCHAR(255)")
                         .HasMaxLength(12);
 

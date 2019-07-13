@@ -54,10 +54,11 @@ namespace BourseApi.Repositories
         {
             User _user = new User();
 
-            _user = _dbContext.Users.Single(user => user.UserName == username);
+            _user = _dbContext.Users.FirstOrDefault(user => user.UserName == username);
             if (_user != null)
                 return new Tuple<AuthenticationResult, User>(new AuthenticationResult(AuthenticationResultCode.ClientConnectivityError), null);
 
+            _user = new User();
             _user.Name = name;
             _user.FamilyName = family;
             _user.UserName = username;

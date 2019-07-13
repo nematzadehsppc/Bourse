@@ -4,13 +4,14 @@ using BourseApi.Contract;
 using Back.DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Back.DAL.ViewModel;
 
 namespace BourseApi.Controllers
 {
-    [Route("user/")]
+    //[Route("user")]
     [ApiController]
     [Produces("application/json")]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         private IUserContract UserContract { get; set; }
         private IAuthenticationContract AuthenticationContract { get; set; }
@@ -22,13 +23,13 @@ namespace BourseApi.Controllers
         }
 
         [Authorize]
-        [Produces("application/json")]
+        //[Produces("application/json")]
         [Route("getAll")]
         [HttpGet]
         public IEnumerable<User> GetAllUsers() => UserContract.GetAll();
 
         [Authorize]
-        [Produces("application/json")]
+        //[Produces("application/json")]
         [Route("getById/{id}")]
         [HttpGet]
         public IActionResult GetById(int id)
@@ -59,11 +60,11 @@ namespace BourseApi.Controllers
             return CreatedAtRoute("GetUser", new { controller = "User", id = value.Id }, value);
         }
 
-        [Route("addUser")]
+        [Route("user/addUser")]
         [HttpPost]
-        public IActionResult Insert(string name, string family, string username, string password, string email, DateTime birthday)
+        public IActionResult Insert([FromBody]UserVM user)
         {
-            if (username is null || password is null)
+            if (user.UserName is null || user.Password is null)
             {
                 return BadRequest("value is null.");
             }
@@ -73,7 +74,7 @@ namespace BourseApi.Controllers
                 return BadRequest();
             }
 
-            Tuple<AuthenticationResult, User> authResult = UserContract.AddUser(name, family, username, password, email, birthday);
+            Tuple<AuthenticationResult, User> authResult = UserContract.AddUser(user.Name, user.FamilyName, user.UserName, user.Password, user.Email, user.BirthDate.Value);
             if (authResult.Item1.Code != AuthenticationResultCode.AuthenticationSuccess)
             {
                 return BadRequest(
@@ -85,7 +86,8 @@ namespace BourseApi.Controllers
                     }
                     );
             }
-            return CreatedAtRoute("GetUser", new { controller = "User", id = authResult.Item2.Id }, (User)authResult.Item2);
+            //return CreatedAtRoute("addUser", new { controller = "User", id = authResult.Item2.Id }, (User)authResult.Item2);
+            return Ok();
         }
 
         [Authorize]

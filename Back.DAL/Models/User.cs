@@ -8,12 +8,10 @@ namespace Back.DAL.Models
     {
         public int Id { get; set; }
         
-        [Required]
         [Column(TypeName = "NVARCHAR(255)")]
         [StringLength(255)]
         public string Name { get; set; }
-
-        [Required]
+        
         [Column(TypeName = "NVARCHAR(255)")]
         [StringLength(255)]
         public string FamilyName { get; set; }
@@ -29,14 +27,13 @@ namespace Back.DAL.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Required]
-        public int AccessLevel { get; set; }
+        //[Required]
+        //public int AccessLevel { get; set; }
         
         [Column(TypeName = "VARCHAR(64)")]
         [StringLength(64)]
         public string CheckSum { get; set; }
-
-        [Required]
+        
         [Column(TypeName = "NVARCHAR(255)")]
         [StringLength(12)]
         [Phone]

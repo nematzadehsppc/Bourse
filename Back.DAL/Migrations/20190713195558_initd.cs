@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Back.DAL.Migrations
 {
-    public partial class initialize : Migration
+    public partial class initd : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,12 +40,12 @@ namespace Back.DAL.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: true),
+                    FamilyName = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: true),
                     UserName = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
                     Password = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: false),
-                    AccessLevel = table.Column<int>(nullable: false),
                     CheckSum = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true),
-                    PhoneNumber = table.Column<string>(type: "NVARCHAR(255)", maxLength: 12, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "NVARCHAR(255)", maxLength: 12, nullable: true),
                     Email = table.Column<string>(type: "NVARCHAR(255)", maxLength: 255, nullable: true),
                     BirthDate = table.Column<DateTime>(type: "DateTime", nullable: true)
                 },

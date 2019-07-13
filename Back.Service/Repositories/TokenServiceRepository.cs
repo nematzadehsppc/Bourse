@@ -30,7 +30,7 @@ namespace BourseApi.Repositories
                 new Claim("Id", user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim("EMail", user.Email),
-                new Claim("AccessLevel", user.AccessLevel.ToString()),
+                //new Claim("AccessLevel", user.AccessLevel.ToString()),
                 new Claim("SessionId", sessionId.ToString())
             };
 
@@ -90,7 +90,7 @@ namespace BourseApi.Repositories
                 Id = Int32.Parse(principal.Claims.FirstOrDefault(c => c.Type == "Id").Value),
                 Name = principal.Identity.Name,
                 Email = principal.Claims.FirstOrDefault(c => c.Type == "Email").Value,
-                AccessLevel = Int32.Parse(principal.Claims.FirstOrDefault(c => c.Type == "AccessLevel").Value),
+                //AccessLevel = Int32.Parse(principal.Claims.FirstOrDefault(c => c.Type == "AccessLevel").Value),
             };
         }
 

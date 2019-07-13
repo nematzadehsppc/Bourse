@@ -4,27 +4,28 @@
   <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
     <div class="form-group">
       <label for="name"><b>نام</b></label><br />
-      <input type="text" name="name" [(ngModel)]="model.name" #name="ngModel" required><br />
+      <input type="text" name="name" [(ngModel)]="model.name" [ngModelOptions]="{standalone: true}" #name="ngModel" required><br />
 
       <label for="family"><b>نام خانوادگی</b></label><br />
-      <input type="text" name="family" [(ngModel)]="model.family" #family="ngModel" required><br />
+      <input type="text" name="family" [(ngModel)]="model.family" [ngModelOptions]="{standalone: true}" #family="ngModel" required><br />
 
       <label for="username"><b>نام کاربری</b></label><br />
-      <input type="text" name="username" [(ngModel)]="model.username" #username="ngModel" required><br />
+      <input type="text" name="username" [(ngModel)]="model.username" [ngModelOptions]="{standalone: true}" #username="ngModel" required><br />
 
       <label for="password"><b>کلمه عبور</b></label><br />
-      <input type="password" name="psw" [(ngModel)]="model.password" #password="ngModel" required><br />
+      <input type="password" name="psw" [(ngModel)]="model.password" [ngModelOptions]="{standalone: true}" #password="ngModel" required><br />
       <p class="error"><span>حداقل 8 کاراکتر</span></p><br />
 
       <label for="password-repeat"><b>تکرار کلمه عبور</b></label><br />
-      <input type="password" name="psw-repeat" [(ngModel)]="model.passwordrepeat" #passwordrepeat="ngModel" required><br />
+      <input type="password" name="psw-repeat" [(ngModel)]="model.passwordrepeat" [ngModelOptions]="{standalone: true}" #passwordrepeat="ngModel" required><br />
 
       <label for="email"><b>ایمیل</b></label><br />
-      <input type="text" name="email" [(ngModel)]="model.email" #email="ngModel" required><br />
+      <input type="text" name="email" [(ngModel)]="model.email" [ngModelOptions]="{standalone: true}" #email="ngModel" required><br />
 
       <label for="birthday"><b>تاریخ تولد</b></label><br />
       <dp-date-picker dir="rtl"
-                      [(ngModel)]="model.birthday"
+                      [(ngModel)]="model.birthdate"
+                      [ngModelOptions]="{standalone: true}"
                       mode="day"
                       placeholder="تاریخ تولد"
                       theme="dp-material">

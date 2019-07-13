@@ -81,6 +81,20 @@ namespace BourseApi
                 };
 
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .AllowAnyHeader()
+                        .WithExposedHeaders()
+                            .WithHeaders("Content-Type")
+                            //.WithOrigins("*")
+                            );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +109,8 @@ namespace BourseApi
 
             //استفاده از JWT
             app.UseAuthentication();
+
+            app.UseCors(policyName: "CorsPolicy");
         }
     }
 }
