@@ -1,6 +1,9 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { HttpEventType, HttpClient } from '@angular/common/http';
+import { HttpEventType, HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule, NgForm } from '@angular/forms';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { LoginViewModel } from 'src/app/models/meta/login-view-model';
 
 @Component({
   selector: 'app-login',
@@ -8,21 +11,50 @@ import { FormsModule, NgForm } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  model: any = {};
+  //model: any = {};
+  public headers: HttpHeaders | undefined | null;
+  public httpOptions: any;
 
-  constructor() { }
+  //constructor() { }
   //constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient) {
+    this.headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
+    this.httpOptions = { headers: this.headers, responseType: "json" };
+  }
+
+  model = new LoginViewModel('admin', '');
 
   ngOnInit() {
   }
-
+  
   //دکمه ورود
   onSubmit() {
     this.login();
   }
 
   public login() {
-    alert(this.model.username);
+    this.loginUser().subscribe(res => {
+      debugger;
+    }, error => {
+      debugger;
+    })
+
+    
+  }
+
+  loginUser(): Observable<any> {
+    //var body = JSON.stringify({
+    //  username: this.model.username,
+    //  password: this.model.password
+    //});
+
+   
+
+    return this.http.post('http://localhost:10818/tauth/login', this.model, this.httpOptions)
+      .pipe(
+        map(res => res)
+      )
   }
 
 }

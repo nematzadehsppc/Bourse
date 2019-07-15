@@ -24,7 +24,7 @@ namespace BourseService
 
             for (int i = 0; i < bytes.Length; i++)
             {
-                hash.Append(bytes[i].ToString("{0:X2}"));
+                hash.Append(bytes[i].ToString("X2"));
             }
             return hash.ToString();
         }

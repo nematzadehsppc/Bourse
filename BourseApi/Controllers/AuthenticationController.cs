@@ -17,10 +17,11 @@ namespace BourseApi.Controllers
     /// <summary>
     /// ای پی آی تأیید هویت کاربر
     /// </summary>
+    [ApiController]
     [Produces("application/json")]
-    [Route("api/tauth")]
-    [EnableCors("OmidanCorsPolicy")]
-    public class AuthenticationController : Controller
+    //[Route("api/tauth")]
+    //[EnableCors("OmidanCorsPolicy")]
+    public class AuthenticationController : ControllerBase
     {
 
         #region Services and Dependency Injection process
@@ -83,9 +84,9 @@ namespace BourseApi.Controllers
         /// 3. additionalInformation (string) - unhandled onformation exception
         /// </returns>   
         [HttpPost]
-        [Route("login")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessfulLoginResponseModel))]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(FailedLoginResponseModel))]
+        [Route("tauth/login")]
+        //[ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessfulLoginResponseModel))]
+        //[ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(FailedLoginResponseModel))]
         public IActionResult Login(
             [FromBody]LoginViewModel loginModel
             )
