@@ -44,6 +44,16 @@ namespace BourseApi.Controllers
         }
         #endregion
 
+
+        [HttpGet]
+        [Route("tauth/userlogin/{id}")]
+        //[ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessfulLoginResponseModel))]
+        //[ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(FailedLoginResponseModel))]
+        public IActionResult UserLogin(int id)
+        {
+            return Ok();
+        }
+
         #region Login
         /// <summary>        
         /// Verifies provided login information and returns the result
@@ -93,7 +103,7 @@ namespace BourseApi.Controllers
         {
             try
             {
-                string clientIPAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                string clientIPAddress = "";// _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
 
                 //در گام اول با بررسی اطلاعات کاربر در دیتابیس
                 //از درستی اطلاعات وارد شده شامل نام کاربری و کلمه عبور و همینطور دسترسی داشتن کاربر به بخش مورد نیاز
@@ -212,7 +222,7 @@ namespace BourseApi.Controllers
                 string newtoken = _tokenService.RegenerateToken(userSession.Token, out exceptionStr);
                 if (newtoken == null)
                     return BadRequest("تولید مجدد رمز کاربر با خطا مواجه شد. " + exceptionStr);
-                userSession.IpAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString(); //ممکن است نشانی ip کامپیوتر تغییر کرده باشد
+                userSession.IpAddress = "";// _accessor.HttpContext.Connection.RemoteIpAddress.ToString(); //ممکن است نشانی ip کامپیوتر تغییر کرده باشد
                 userSession.Token = newtoken;
                 userSession.LastRenewal = DateTime.Now;
                 userSession.ValidUntil = DateTime.Now + TimeSpan.FromSeconds(SecurityParameters.DefaultTokenExpirationInSeconds);

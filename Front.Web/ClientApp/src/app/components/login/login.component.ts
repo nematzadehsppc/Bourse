@@ -44,14 +44,11 @@ export class LoginComponent implements OnInit {
   }
 
   loginUser(): Observable<any> {
-    //var body = JSON.stringify({
-    //  username: this.model.username,
-    //  password: this.model.password
-    //});
+    var body = JSON.stringify({
+      mahinName: this.model.username
+    });
 
-   
-
-    return this.http.post('http://localhost:10818/tauth/login', this.model, this.httpOptions)
+    return this.http.get('http://localhost:10818/tauth/userlogin/5', this.httpOptions)
       .pipe(
         map(res => res)
       )

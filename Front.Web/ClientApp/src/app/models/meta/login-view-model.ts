@@ -5,7 +5,5 @@ export class LoginViewModel {
     public serviceAccessType: number = 1,
     public clientAppName: string = 'Tadbir Web',
     public language: string = 'fa-IR',
-    public failed: boolean = false,
-    public errmsg: string = ''
   ){}
 }

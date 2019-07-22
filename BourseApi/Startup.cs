@@ -13,6 +13,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BourseService;
 using BourseApi.Controllers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace BourseApi
 {
@@ -30,6 +33,9 @@ namespace BourseApi
         {
             services.AddDbContext<Back.DAL.Context.UAppContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("UAppContext")));
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddTransient<DbContext, Back.DAL.Context.UAppContext>();
             services.AddScoped<IUserContract, UserRepository>();
