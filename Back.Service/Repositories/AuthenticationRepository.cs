@@ -1,24 +1,98 @@
 ﻿using BourseApi.Contract;
 using Back.DAL.Models;
+using Back.DAL.ViewModel;
 using System;
 using Back.DAL.Context;
 using System.Linq;
 using System.Security.Cryptography;
+using BourseService;
+using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml;
+using Microsoft.EntityFrameworkCore;
 
 namespace BourseApi.Repositories
 {
     public class AuthenticationRepository : IAuthenticationContract
     {
         private UAppContext _dbContext;
+        private IUserOptionContract _userOptionContract;
 
-        public AuthenticationRepository(UAppContext context)
+        public AuthenticationRepository(UAppContext context, IUserOptionContract userOptionContract)
         {
             _dbContext = context;
+            _userOptionContract = userOptionContract;
         }
 
         public UserSession AddUserSession(UserSession userSession, out string exceptionStr)
         {
-            throw new NotImplementedException();
+            Session session = GetUserTokenStore(userSession.UserId, out exceptionStr);
+            if (session == null)
+                return null;
+
+
+            List<UserSession> userSessions = ReadStoredUserSessions(session.UserSession);
+
+            if (userSession.SessionId == Guid.Empty)
+            {
+                userSession.SessionId = Guid.NewGuid();
+                while (userSessions.Find(u => u.SessionId == userSession.SessionId) != null)
+                {
+                    userSession.SessionId = Guid.NewGuid();
+                }
+            }
+
+            userSessions.Add(userSession);
+
+            session.UserSession = StoreUserSessions(userSessions);
+
+            if (!UpdateSessionContent(session, out exceptionStr))
+                return null;
+
+            return userSession;
+        }
+
+        private Boolean UpdateSessionContent(Session session, out string exceptionStr)
+        {
+            exceptionStr = "";
+            try
+            {
+                session.MCheckSum = GetHashValue(session.UserSession);
+                session.FileSize = session.UserSession.LongLength;
+
+                _dbContext.Sessions.Update(session);
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+            catch (Exception exp)
+            {
+                exceptionStr = exp.ToString();
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// استخراج مقدار هش شده مربوط به تصویر
+        /// Added By Saeedeh Taheri
+        /// </summary>
+        /// <param name="imageData"></param>
+        /// <returns></returns>
+        private string GetHashValue(byte[] imageData)
+        {
+            StringBuilder sBuilder = new StringBuilder();
+            using (System.Security.Cryptography.MD5 md5Hash = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] data = md5Hash.ComputeHash(imageData);
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("X2"));
+                }
+            }
+            return sBuilder.ToString();
         }
 
         public Tuple<AuthenticationResult, User> AuthenticateUser(LoginViewModel loginModel, string clientIPAddress)
@@ -26,15 +100,15 @@ namespace BourseApi.Repositories
             if (loginModel.Username == null || loginModel.Password == null || loginModel.ServiceAccessType == ServiceAccesType.None)
                 return new Tuple<AuthenticationResult, User>(new AuthenticationResult(AuthenticationResultCode.InvalidInputParams), null);
 
-            User _user = _dbContext.Users.FirstOrDefault(user => user.Name == loginModel.Username && user.Password == loginModel.Password);
+            User _user = _dbContext.Users.FirstOrDefault(user => user.UserName == loginModel.Username && user.Password == SecurityParameters.MD5Encryption(loginModel.Password));
 
             if (_user != null)
             {
-                byte[] bHashPassword = MD5.Create().ComputeHash(new System.Text.ASCIIEncoding().GetBytes(_user.Password));
+                byte[] bHashPassword = MD5.Create().ComputeHash(new System.Text.ASCIIEncoding().GetBytes(loginModel.Password));
                 string hashPassword = "";
                 for (int index = 0; index < bHashPassword.Length; index++)
                 {
-                    hashPassword = string.Format("{0:X2}", bHashPassword[index]);
+                    hashPassword += string.Format("{0:X2}", bHashPassword[index]);
                 }
 
                 if (hashPassword == _user.Password)
@@ -94,7 +168,174 @@ namespace BourseApi.Repositories
 
         public Guid GetNextSessionId(int userId)
         {
-            throw new NotImplementedException();
+            Session userTokenStore = GetUserTokenStore(userId, out string exceptionStr);
+            if (userTokenStore == null)
+                return Guid.Empty;
+
+            Guid id = Guid.NewGuid();
+            List<UserSession> userSessions = ReadStoredUserSessions(userTokenStore.UserSession);
+            while (userSessions.Find(u => u.SessionId == id) != null)
+            {
+                id = Guid.NewGuid();
+            }
+
+            return id;
+        }
+
+        private Session GetUserTokenStore(int userId, out string exceptionStr)
+        {
+            exceptionStr = "";
+
+            int sessionId = 0;
+            Guid userOptGuid = Guid.Empty;
+            string optionValue = GetUserOptionValue(userId, UserOPT.USER_OPT_LOGINSESSIONSIMAGEGUID, false);
+            if (optionValue != null)
+            {
+                string[] optValueInfoParts = optionValue.Split('$', StringSplitOptions.RemoveEmptyEntries);
+                if (optValueInfoParts.Length != 2)
+                    optionValue = null;
+                else
+                {
+                    if (!Int32.TryParse(optValueInfoParts[0], out sessionId))
+                        optionValue = null;
+                    else
+                        if (!Guid.TryParse(optValueInfoParts[1], out userOptGuid))
+                        optionValue = null;
+                }
+            }
+
+            if (optionValue == null)
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<UserSession>));
+
+
+                byte[] baSessions;
+                using (MemoryStream writer = new MemoryStream())
+                {
+                    xmlSerializer.Serialize(writer, new List<UserSession>());
+                    baSessions = writer.GetBuffer();
+                }
+
+                Session newTokenInfo = new Session()
+                {
+                    UserSession = baSessions,
+                    UserId = userId
+                };
+
+
+                if (newTokenInfo.SessionId == null || newTokenInfo.SessionId == Guid.Empty)
+                {
+                    newTokenInfo.SessionId = Guid.NewGuid();
+                }
+                newTokenInfo.MCheckSum = GetHashValue(newTokenInfo.UserSession);
+                newTokenInfo.FileSize = newTokenInfo.UserSession.LongLength;
+
+                _dbContext.Sessions.Add(newTokenInfo);
+                _dbContext.SaveChanges();
+
+                Session userTokenStore = newTokenInfo;
+                if (userTokenStore != null)
+                {
+                    SetUserOptionValue(userId, UserOPT.USER_OPT_LOGINSESSIONSIMAGEGUID, userTokenStore.Id.ToString() + "$" + userTokenStore.SessionId.ToString(), false);
+                    return userTokenStore;
+                }
+                return null;
+            }
+
+
+            Session session = _dbContext.Sessions.FirstOrDefault(s => s.Id == sessionId && s.SessionId == userOptGuid);
+
+            if (session != null)
+                return session;
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// بازگشت مقدار تنظیمات مربوط به کاربر ذخیره شده در دیتابیس __Sys__
+        /// </summary>
+        /// <param name="userid">شناسه کاربر</param>
+        /// <param name="tadbirWebOption"></param>
+        ///<param name="samanString"></param>
+        /// <returns></returns>
+        public string GetUserOptionValue(int userId, UserOPT userOption, bool samanString)
+        {
+            UserOption _userOption = _userOptionContract.FindByUserId(userId);
+            //UserOption _userOption = _dbContext.UserOptions.Find(userId);
+            if (_userOption != null)
+                return _userOption.OptionValue;
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// ذخیره تنظیمات وب کاربر
+        /// </summary>
+        /// <param name="userid">شناسه کاربر</param>
+        /// <param name="tadbirWebOption">شناسه تنظیمات</param>
+        /// <param name="webOptionValue"></param>
+        /// <param name="samanString">اگر لازم است تبدیل کدپیج روی مقدار انجام شد این پارامتر را true ارسال می‌کنیم</param>
+        /// <returns></returns>
+        public bool SetUserOptionValue(int userId, UserOPT userOPT, string optionValue, bool samanString)
+        {
+
+            try
+            {
+                UserOption userOption = _dbContext.UserOptions.FirstOrDefault(op => op.UserId == userId && op.Id == (int)userOPT);
+
+                if (userOption != null)
+                {
+                    _dbContext.UserOptions.Remove(userOption);
+                    _dbContext.SaveChanges();
+                }
+
+                userOption = new UserOption()
+                {
+                    Id = (int)userOPT,
+                    UserId = userId,
+                    OptionValue = optionValue
+                };
+
+                //_dbContext.UserOptions.Add(userOption);
+                //_dbContext.Database.ExecuteSqlCommand(@"SET IDENTITY_INSERT [dbo].[__UserOption__] ON");
+                //_dbContext.SaveChanges();
+                //_dbContext.Database.ExecuteSqlCommand(@"SET IDENTITY_INSERT [dbo].[__UserOption__] OFF");
+
+                try
+                {
+                    var conn = _dbContext.Database.GetDbConnection();
+                    conn.Open();
+                    var command = conn.CreateCommand();
+                    command.CommandText = string.Format("SET IDENTITY_INSERT [dbo].[__UserOption__] ON " +
+                        "INSERT INTO [dbo].[__UserOption__] ([Id], [UserId] ,[OptionValue]) VALUES ({0}, {1}, '{2}') " +
+                        "SET IDENTITY_INSERT[dbo].[__UserOption__] OFF"
+                        , userOption.Id, userOption.UserId, userOption.OptionValue);
+                    command.ExecuteScalar();
+                    conn.Close();
+
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                    //Debug.WriteLine("File", ex.Message.ToString());
+                }
+
+                
+
+                //_dbContext.UserOptions.Add(userOption);
+                //_dbContext.SaveChanges();
+
+                //return true;
+            }
+
+            catch (Exception ex)
+            {
+                string message = ex.ToString();
+                return false;
+            }
         }
 
         public User GetUser(int userid)
@@ -136,5 +377,28 @@ namespace BourseApi.Repositories
         {
             throw new NotImplementedException();
         }
+
+        #region Internals
+        private List<UserSession> ReadStoredUserSessions(byte[] buffer)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<UserSession>));
+            using (MemoryStream reader = new MemoryStream(buffer))
+            {
+                using (XmlTextReader xmlTextReader = new XmlTextReader(reader))
+                    return (List<UserSession>)xmlSerializer.Deserialize(xmlTextReader);
+            }
+        }
+
+        private byte[] StoreUserSessions(List<UserSession> userSessions)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<UserSession>));
+            using (MemoryStream writer = new MemoryStream())
+            {
+                using (XmlTextWriter xmlTextWriter = new XmlTextWriter(writer, Encoding.Unicode))
+                    xmlSerializer.Serialize(xmlTextWriter, userSessions);
+                return writer.GetBuffer();
+            }
+        }
+        #endregion
     }
 }

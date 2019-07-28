@@ -4,14 +4,16 @@ using Back.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Back.DAL.Migrations
 {
     [DbContext(typeof(UAppContext))]
-    partial class UAppContextModelSnapshot : ModelSnapshot
+    [Migration("20190725095516_updateSessionTable")]
+    partial class updateSessionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,7 +148,9 @@ namespace Back.DAL.Migrations
 
             modelBuilder.Entity("Back.DAL.Models.UserOption", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("OptionValue");
 

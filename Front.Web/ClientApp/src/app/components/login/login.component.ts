@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { LoginViewModel } from 'src/app/models/meta/login-view-model';
+import { SuccessfulLoginResponseModel } from 'src/app/models/meta/SuccessfulLoginResponseModel';
 
 @Component({
   selector: 'app-login',
@@ -34,21 +35,44 @@ export class LoginComponent implements OnInit {
   }
 
   public login() {
-    this.loginUser().subscribe(res => {
-      debugger;
-    }, error => {
-      debugger;
-    })
+
+    //فراخوانی سرویس لاگین
+    this.loginUser()
+      .subscribe(
+        (data: SuccessfulLoginResponseModel) => {
+          //ورود موفق
+          JSON.stringify(data);
+          debugger;
+        },
+      error => {
+        if (error.status == 401) {
+          //جلسه کاربر را تمدید کنیم
+        }
+        else {
+          //احتمالا جلسه کاربر از روی سرور حذف شده
+          localStorage.removeItem('loggonuser');
+        }
+      });
+
+    //this.loginUser().subscribe(res => {
+    //  debugger;
+    //}, error => {
+    //  debugger;
+    //})
 
     
   }
 
   loginUser(): Observable<any> {
     var body = JSON.stringify({
-      mahinName: this.model.username
+      username: this.model.username,
+      password: this.model.password,
+      serviceAccessType: this.model.serviceAccessType,
+      clientAppName: this.model.clientAppName,
+      language: this.model.language
     });
 
-    return this.http.get('http://localhost:10818/tauth/userlogin/5', this.httpOptions)
+    return this.http.post('http://localhost:10818/tauth/login', body, this.httpOptions)
       .pipe(
         map(res => res)
       )

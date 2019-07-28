@@ -44,6 +44,8 @@ namespace BourseApi
             services.AddScoped<IParamValueContract, ParamValueRepository>();
             services.AddScoped<IAuthenticationContract, AuthenticationRepository>();
             services.AddScoped<ITokenServiceContract, TokenServiceRepository>();
+            services.AddScoped<ISessionContract, SessionRepository>();
+            services.AddScoped<IUserOptionContract, UserOptionRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -110,13 +112,24 @@ namespace BourseApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
             app.UseMvc();
 
             //استفاده از JWT
             app.UseAuthentication();
 
             app.UseCors(policyName: "CorsPolicy");
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

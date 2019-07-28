@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using BourseApi.Contract;
 using Back.DAL.Models;
-using Microsoft.AspNetCore.Cors;
 using System.Net;
 using System;
 using System.Diagnostics;
@@ -103,7 +102,7 @@ namespace BourseApi.Controllers
         {
             try
             {
-                string clientIPAddress = "";// _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+                string clientIPAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
 
                 //در گام اول با بررسی اطلاعات کاربر در دیتابیس
                 //از درستی اطلاعات وارد شده شامل نام کاربری و کلمه عبور و همینطور دسترسی داشتن کاربر به بخش مورد نیاز

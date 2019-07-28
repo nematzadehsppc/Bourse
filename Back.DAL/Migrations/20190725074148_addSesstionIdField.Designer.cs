@@ -4,14 +4,16 @@ using Back.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Back.DAL.Migrations
 {
     [DbContext(typeof(UAppContext))]
-    partial class UAppContextModelSnapshot : ModelSnapshot
+    [Migration("20190725074148_addSesstionIdField")]
+    partial class addSesstionIdField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,10 +70,6 @@ namespace Back.DAL.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("FileSize");
-
-                    b.Property<string>("MCheckSum");
 
                     b.Property<Guid>("SessionId");
 
@@ -142,19 +140,6 @@ namespace Back.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("__User__");
-                });
-
-            modelBuilder.Entity("Back.DAL.Models.UserOption", b =>
-                {
-                    b.Property<int>("Id");
-
-                    b.Property<string>("OptionValue");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("__UserOption__");
                 });
 
             modelBuilder.Entity("Back.DAL.Models.ParamValue", b =>

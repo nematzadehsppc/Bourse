@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Back.DAL.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Back.DAL.Context
 {
@@ -31,12 +32,24 @@ namespace Back.DAL.Context
             {
                 entity.ToTable("__ParamValue__");
             });
+
+            modelBuilder.Entity<Session>(entity =>
+            {
+                entity.ToTable("__Session__");
+            });
+
+            modelBuilder.Entity<UserOption>(entity =>
+            {
+                entity.ToTable("__UserOption__");
+            });
         }
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Symbol> Symbols { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<ParamValue> ParamValues { get; set; }
+        public virtual DbSet<Session> Sessions { get; set; }
+        public virtual DbSet<UserOption> UserOptions { get; set; }
         
     }
 }
